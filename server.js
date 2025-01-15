@@ -1,4 +1,6 @@
 const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { verifyToken, verifyAdmin } = require('./routes/authMiddleware');
 const authRoutes = require('./routes/authRoutes');
@@ -6,8 +8,17 @@ require('dotenv').config(); // Load environment variables
 
 const app = express();
 
+// Enable CORS for all origins (or specify domains you want to allow)
+app.use(cors());
+
 app.use(express.json());
 app.use(cookieParser());
+
+// Databasanslutning
+mongoose.connect(process.env.MONGO_CONNECTION_STRING) 
+.then(() => console.log('Connected to the database'))
+.catch(err => console.error('Database connection error:', err)); 
+
 
 // Route handling authentication (login, signup)
 app.use('/auth', authRoutes);
