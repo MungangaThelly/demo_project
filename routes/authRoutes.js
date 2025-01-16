@@ -1,11 +1,21 @@
 const express = require('express');
-const router = express.Router();
 const { loginUser, registerUser } = require('../controllers/authController');
+const { body } = require('express-validator'); // For input validation
 
-// Route for user login
-router.post('/login', loginUser);
+const router = express.Router();
 
-// Route for user registration
-router.post('/register', registerUser);
+// User login
+router.post('/login', 
+    body('email').isEmail().withMessage('Please enter a valid email address'),
+    body('password').isLength({ min: 12 }).withMessage('Password must be at least 12 characters long'),
+    loginUser
+);
+
+// User registration
+router.post('/register',
+    body('email').isEmail().withMessage('Please enter a valid email address'),
+    body('password').isLength({ min: 12 }).withMessage('Password must be at least 12 characters long'),
+    registerUser
+);
 
 module.exports = router;
